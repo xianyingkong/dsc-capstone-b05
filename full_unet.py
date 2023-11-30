@@ -37,7 +37,7 @@ class FullUNet(nn.Module):
         self.time_embed.requires_grad_(False) # setting this means the the temporal embeddings are not trainable
 
         # Downsampling
-        self.te1 = self._make_te(time_emb_dim, 1)
+        self.te1 = self._make_te(time_emb_dim, in_c)
         self.b1 = self.ConvBlock(in_c, 64)
         self.pool = nn.MaxPool2d(2)
         
