@@ -1,15 +1,22 @@
+"""
+
+Setting up the UNet
+
+Expansion and modification of tiny UNet from Dataflowr: https://dataflowr.github.io/website/modules/18a-diffusion/
+
+"""
+
 import torch
 from torch import nn
 
 class SimpleConv(nn.Module):
     """
-    This class represents a convolutional block with optional layer normalization, 
-    a 2D convolutional layer, an activation function, and optional normalization.
+    This class represents a convolutional block with a 2D convolutional layer, a batch normalization function, and an activation function.
 
     @param in_c number of input channels
     @param out_c number of output channels
     @param kernel_size, stride and padding are parameters of the convolution layer
-    @param activation activation function is SiLU if not specified
+    @param activation activation function is ReLU if not specified
     @param normalize boolean value set to True as default
 
     """
@@ -27,7 +34,10 @@ class SimpleConv(nn.Module):
         return out
     
 class FullUNet(nn.Module):
-    # Here is a network with 3 down and 3 up with the tiny block
+    """
+    This class represents the full UNet with time embeddings
+    
+    """
     def __init__(self, in_c=1, out_c=1, size=32, n_steps=1000, time_emb_dim=100):
         super().__init__()
 
@@ -106,8 +116,7 @@ class FullUNet(nn.Module):
       
     def ConvBlock(self, in_c, out_c):
         """
-        This function creates a sequential block consisting of three MyConv blocks. 
-        It is essentially a mini neural network block comprising three convolutional layers with normalization and activation.
+        This function creates a sequential block consisting of two SimpleConv blocks.
         """  
         return nn.Sequential(SimpleConv(in_c, out_c), 
                              SimpleConv(out_c, out_c))

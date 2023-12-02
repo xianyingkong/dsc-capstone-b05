@@ -1,6 +1,4 @@
 import matplotlib.pyplot as plt
-import torch
-from tqdm.notebook import tqdm
 
 def show_images(images, title=""):
     """Shows the provided images as sub-pictures in a square"""
@@ -25,26 +23,3 @@ def show_images(images, title=""):
     
     # Showing the figure
     plt.show()
-
-def generate_image(ddpm, sample_size, channel, size, device):
-    """Generate the image from the Gaussian noise"""
-    frames = []
-    frames_mid = []
-    ddpm.eval()
-    with torch.no_grad():
-        timesteps = list(range(ddpm.num_timesteps))[::-1]
-        print(len(timesteps))
-        sample = torch.randn(sample_size, channel, size, size).to(device)
-        
-        for i, t in enumerate(tqdm(timesteps)):
-            time_tensor = (torch.ones(sample_size, 1) * t).long().to(device)
-            residual = ddpm.reverse(sample, time_tensor)
-            sample = ddpm.step(residual, time_tensor[0], sample)
-
-            if t==len(timesteps)/2:
-                for i in range(sample_size):
-                    frames_mid.append(sample[i].detach().cpu())
-
-        for i in range(sample_size):
-            frames.append(sample[i].detach().cpu())
-    return frames, frames_mid
