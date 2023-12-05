@@ -60,7 +60,7 @@ class TrainingLoop:
             progress_bar.set_description(f"Epoch {epoch}")
             for step, batch in enumerate(self.dataloader):
                 # put batch to device (gpu or cpu) to leverage computational resources
-                batch = batch[0].to(self.device) # batch.shape = torch.Size([batch_size, 1, 32, 32])
+                batch = batch[0].to(self.device)
 
                 # create noise
                 actual_noise = generate_noise(self.noise_type, batch.shape, self.device)
@@ -74,7 +74,7 @@ class TrainingLoop:
                 noisy = self.diffusion_model.add_noise(batch, actual_noise, timesteps)
 
                 # gives the noisy image and returns a prediction of the noise added
-                noise_pred = self.diffusion_model.reverse(noisy, timesteps) # torch.Size([batch_size, 1, 32, 32])
+                noise_pred = self.diffusion_model.reverse(noisy, timesteps)
 
                 loss = calc_loss(self.loss_f, noise_pred, actual_noise)
 

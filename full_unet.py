@@ -13,11 +13,11 @@ class SimpleConv(nn.Module):
     """
     This class represents a convolutional block with a 2D convolutional layer, a batch normalization function, and an activation function.
 
-    @param in_c number of input channels
-    @param out_c number of output channels
-    @param kernel_size, stride and padding are parameters of the convolution layer
-    @param activation activation function is ReLU if not specified
-    @param normalize boolean value set to True as default
+    :param in_c number of input channels
+    :param out_c number of output channels
+    :param kernel_size, stride and padding are parameters of the convolution layer
+    :param activation activation function is ReLU if not specified
+    :param normalize boolean value set to True as default
 
     """
     def __init__(self, in_c, out_c, kernel_size=3, stride=1, padding=1, activation=None, normalize=True):
@@ -37,8 +37,13 @@ class FullUNet(nn.Module):
     """
     This class represents the full UNet with time embeddings
     
+    :param in_c the number of input channels
+    :param out_c the number of output channels
+    :param n_steps the number of time embeddings
+    :param time_emb_dim the size of each embedding vector
+    
     """
-    def __init__(self, in_c=1, out_c=1, size=32, n_steps=1000, time_emb_dim=100):
+    def __init__(self, in_c=1, out_c=1, n_steps=1000, time_emb_dim=100):
         super().__init__()
 
         # Sinusoidal embedding
@@ -79,7 +84,7 @@ class FullUNet(nn.Module):
         self.b8 = self.ConvBlock(128, 64)
         self.conv_out = nn.Conv2d(64, out_c, 3, 1, 1)
 
-    def forward(self, x, t): # x is (bs, in_c, size, size) t is (bs)
+    def forward(self, x, t): 
         t = self.time_embed(t)
         n = len(x)
         out1 = self.b1(x + self.te1(t).reshape(n, -1, 1, 1)) 
