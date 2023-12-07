@@ -8,9 +8,29 @@ https://github.com/dataflowr/notebooks
 """
 
 import torch
+import torchvision
 import matplotlib.pyplot as plt
-from torch.utils.data import DataLoader
-from torch.utils.data import Subset
+
+def load_data(data_name, root_dir, train=True, download=True):
+    valid_data = {"MNIST", "CIFAR10"}
+    if data_name not in valid_data:
+        raise Exception(f"'data_name' not of value {valid_data}")
+    
+    dataset = None
+    
+    if data_name == "MNIST":
+        transform01 = torchvision.transforms.Compose([
+                torchvision.transforms.Resize(32),
+                torchvision.transforms.ToTensor()
+                ])
+        dataset = torchvision.datasets.MNIST(root=root_dir, train=train, transform=transform01, download=download)
+    else:
+        transforms01 = torchvision.transforms.Compose([
+                torchvision.transforms.ToTensor(),
+                #torchvision.transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+            ])
+        dataset = torchvision.datasets.CIFAR10(root=root_dir, train=train, transform=transforms01, download=download)
+    return dataset
 
 def show_images(images, title=""):
     """Shows the provided images as sub-pictures in a square"""
@@ -39,7 +59,7 @@ def show_images(images, title=""):
 def show_image_dataset(dataset, class_name = None, num_images = 100):
     dataloader = torch.utils.data.DataLoader(dataset=dataset)
     if class_name is not None:
-        dataloader = make_dataloader_by_class(dataset, class_name)
+        dataloader = make_dataloader_by_class(dataset, class_name, batch_size=num_images)
         
     for b in dataloader:
         batch = b[0]
@@ -59,7 +79,7 @@ def make_dataset_by_class(dataset, class_name):
         current_class = dataset[i][1]
         if current_class == s_idx:
             s_indices.append(i)
-    return Subset(dataset, s_indices) 
+    return torch.utils.data.Subset(dataset, s_indices) 
     
 def make_dataloader_by_class(dataset, class_name, batch_size = 1, shuffle = True):
     """Create Dataloader object given a class name of a multiclass dataset"""

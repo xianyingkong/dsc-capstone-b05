@@ -107,8 +107,6 @@ def calc_loss(loss_f, pred, actual):
         criterion = nn.L1Loss()
     elif loss_f == "MSE":
         criterion = nn.MSELoss()
-    elif loss_f == "NLL":
-        criterion = nn.NLLLoss()
     elif loss_f == "Sigmoid":
         criterion = nn.BCEWithLogitsLoss()
     
@@ -123,9 +121,10 @@ class LaplaceNLL(nn.Module):
     def __init__(self, scale = 1.0):
         super(LaplaceNLL, self).__init__()
         self.scale = scale
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     def forward(self, x, target):
-        log = torch.log(torch.tensor([2*self.scale])).to(device)
+        log = torch.log(torch.tensor([2*self.scale])).to(self.device)
         nll_loss = torch.sum(log + torch.abs(x-target)/self.scale, dim=-1)
         nll_loss = torch.mean(nll_loss)
         return nll_loss
