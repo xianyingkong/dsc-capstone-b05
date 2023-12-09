@@ -1,6 +1,0 @@
-{
-    "fp": "./data/mnist_test_data.pt",
-    "batch_size" : 100,
-    "epochs" : 5,
-    "workers": 1
-}

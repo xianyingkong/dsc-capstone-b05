@@ -1,8 +1,8 @@
-from image_data_utils import load_data
-from full_unet import FullUNet
-from ddpm import DDPM
-from train_utils import TrainingLoop
+from models.full_unet import FullUNet
+from models.ddpm import DDPM
+from utils.train_utils import TrainingLoop
 
+import os
 import sys
 import torch
 import json
@@ -27,7 +27,16 @@ if __name__  == '__main__':
                             batch_size = config['batch_size'],
                             num_epochs = config['epochs'],
                             num_workers = config['workers'])
+        print("Training started...")
         trainer.run_loop()
+        if not os.path.exists("./output/"):
+            os.makedirs("./output/")
+        print("Training ended... Saving model...")
+
+        torch.save(model, './output/ddpm_model.pt')
+        torch.save(network, './output/network.pt')
+        
+        print('Model trained and saved to output/')
 
 
 

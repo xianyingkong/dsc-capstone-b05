@@ -5,9 +5,9 @@ Utilities for training specific datasets, i.e. CIFAR10 and MNIST
 """
 
 import copy
-from image_data_utils import make_dataset_by_class
-from ddpm import DDPM
-from train_utils import TrainingLoop
+from utils.image_data_utils import make_dataset_by_class
+from models.ddpm import DDPM
+from utils.train_utils import TrainingLoop
 
 def train_cifar_by_class(cifar_dataset, class_name, device, base_network, batch_size=512, num_epochs=20, num_workers=4):
     valid_class = {"airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck"}

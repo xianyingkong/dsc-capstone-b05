@@ -9,7 +9,7 @@ https://dataflowr.github.io/website/modules/18a-diffusion/
 import torch
 from torch import nn
 from tqdm.notebook import tqdm
-from noise_utils import generate_noise
+from utils.noise_utils import generate_noise
 
 class TrainingLoop:
     """
@@ -56,8 +56,8 @@ class TrainingLoop:
     def run_loop(self):
         for epoch in range(self.epochs):
             self.diffusion_model.train() 
-            progress_bar = tqdm(total=len(self.dataloader))
-            progress_bar.set_description(f"Epoch {epoch}")
+            # progress_bar = tqdm(total=len(self.dataloader))
+            # progress_bar.set_description(f"Epoch {epoch}")
             for step, batch in enumerate(self.dataloader):
                 # put batch to device (gpu or cpu) to leverage computational resources
                 batch = batch[0].to(self.device)
@@ -88,12 +88,13 @@ class TrainingLoop:
                 # updates the parameters
                 self.optimizer.step()
 
-                progress_bar.update(1)
-                logs = {"loss": loss.detach(), "step": self.global_step}
-                progress_bar.set_postfix(**logs)
+                # progress_bar.update(1)
+                # logs = {"loss": loss.detach(), "step": self.global_step}
+                # progress_bar.set_postfix(**logs)
                 self.global_step += 1
 
-            progress_bar.close()
+            # progress_bar.close()
+            print(f"Epoch: {epoch}; Loss: {loss.detach()}")
             
         self.global_step = 0
         

@@ -7,7 +7,7 @@
 
 import torch
 from torch import nn
-from noise_utils import generate_noise
+from utils.noise_utils import generate_noise
 from tqdm.notebook import tqdm
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
