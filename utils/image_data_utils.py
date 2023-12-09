@@ -10,6 +10,7 @@ https://github.com/dataflowr/notebooks
 import torch
 import torchvision
 import matplotlib.pyplot as plt
+from torch.utils.data import Dataset
 
 def load_data(data_name, root_dir, train=True, download=True):
     valid_data = {"MNIST", "CIFAR10"}
