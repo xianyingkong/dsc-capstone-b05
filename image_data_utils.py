@@ -71,6 +71,44 @@ def show_image_dataset(dataset, class_name = None, num_images = 100):
     except IndexError as error:
         raise IndexError("'num_images' exceed number of image data, re-adjust 'num_images'")
     
+class RestrictedDataset(Dataset):
+    """ 
+    A classic pytorch dataset that only keeps specified labels in the dataset. 
+    
+    @param dataset - A pytorch dataset object
+    @param labels - A list of either the raw labels (integers) or class label (strings) to select for data.
+    """
+    def __init__(self, dataset, labels):
+        self.dataset = dataset
+        if not isinstance(labels, (list, tuple, set)):
+            # Check whether this is a single label
+            assert isinstance(labels, (str, int))
+            
+        labels_cleaned = set()
+        # Convert all labels to target idx and a set
+        for label in labels:
+            assert isinstance(label, (str, int))
+            
+            # Convert into an integer
+            if isinstance(label, str):
+                assert label in dataset.class_to_idx, 'Class is not in labels'
+                label = dataset.class_to_idx[label]
+            
+            labels_cleaned.add(label)
+        
+        
+        # Select labels
+        in_dataset = np.array([x in labels_cleaned for x in dataset.targets])
+        self.mapping = torch.arange(len(dataset))[in_dataset]
+        print(f'Dataset created with {self.__len__()} examples')
+    
+    def __len__(self):
+        return len(self.mapping)
+    
+    def __getitem__(self, idx):
+        return self.dataset[self.mapping[idx]]
+    
+    
 def make_dataset_by_class(dataset, class_name):
     """Create Subset object given a class name of a multiclass dataset"""
     s_indices = []
